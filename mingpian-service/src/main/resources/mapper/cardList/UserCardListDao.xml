@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.cardList.dao.UserCardListDao">
+
+    <resultMap type="com.sqx.modules.cardList.entity.UserCardList" id="UserCardListMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="cardId" column="card_id" jdbcType="INTEGER"/>
+        <result property="groupId" column="group_id" jdbcType="VARCHAR"/>
+        <result property="cardRemark" column="card_remark" jdbcType="VARCHAR"/>
+        <result property="cardSpell" column="card_spell" jdbcType="VARCHAR"/>
+        <result property="cardAvatar" column="card_avatar" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+        <result property="cardPosition" column="card_position" jdbcType="VARCHAR"/>
+        <result property="cardCompany" column="card_company" jdbcType="VARCHAR"/>
+        <result property="collectTime" column="collect_time" jdbcType="TIMESTAMP"/>
+        <result property="contactCount" column="contact_count" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="queryMyCollect" resultMap="UserCardListMap">
+        select  * from  user_card_list
+        <where>
+            1=1
+            <if test="groupId != null and groupId != ''">
+                and group_Id = #{groupId}
+            </if>
+            <if test="cardRemark != null and cardRemark !=''">
+                and card_remark like concat('%',#{cardRemark},'%')
+            </if>
+            <if test="cardPosition != null and cardPosition !=''">
+                and card_position like concat ('%', #{cardPosition}, '%')
+            </if>
+            <if test="cardCompany != null and cardCompany !=''">
+                and card_company like concat ('%', #{cardCompany}, '%')
+            </if>
+            <if test="initial != null and initial !=''">
+                and card_spell like concat (#{initial}, '%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="searchKey != null and searchKey != ''">
+                and card_remark like concat ('%', #{searchKey} ,'%') or
+                card_spell like concat ('%', #{searchKey} ,'%') or
+                real_name like concat ('%', #{searchKey} ,'%') or
+                card_position like concat ('%', #{searchKey} ,'%') or
+                card_company like concat ('%', #{searchKey} ,'%')
+            </if>
+
+        </where>
+        <if test="sortType == null">
+            order by create_time desc
+        </if>
+        <if test="sortType == 1">
+            order by card_spell asc
+        </if>
+        <if test="sortType == 2">
+            order by contact_count desc
+        </if>
+    </select>
+
+    <update id="updateCardRemark">
+        update user_card_list set card_remark = #{cardRemark}, card_spell = #{upperCase} where id = #{id}
+    </update>
+
+    <update id="updateRemark">
+        update user_card_list set remark = #{remark} where id = #{id}
+    </update>
+
+    <update id="incrContactCount">
+        update user_card_list set contact_count = contact_count + 1 where user_id = #{userId} and card_id = #{cardId}
+    </update>
+
+    <select id="queryDetailsById" resultType="java.util.Map">
+        SELECT
+            a.id,
+            a.card_id as cardId,
+            a.card_remark as cardRemark,
+            a.remark,
+            a.card_spell as cardSpell,
+            a.collect_time as collectTime,
+            a.contact_count as contactCount,
+            a.card_avatar as cardAvatar,
+            b.card_type as cardType,
+            b.real_name as realName,
+            b.company_name as companyName,
+            b.company_position as companyPosition,
+            b.company_province as companyProvince,
+            b.company_city as companyCity,
+            b.company_district as companyDistrict,
+            b.company_address as companyAddress,
+            b.industry_first_id as industryFirstId,
+            b.industry_second_id as industrySecondId,
+            b.industry_first_name as industryFirstName,
+            b.industry_second_name as industrySecondName,
+            b.card_img as cardImg,
+            b.company_blurb
+        FROM
+            `user_card_list` a
+                LEFT JOIN business_card b ON a.card_id = b.card_id
+        WHERE
+            id = #{id}
+    </select>
+</mapper>
+

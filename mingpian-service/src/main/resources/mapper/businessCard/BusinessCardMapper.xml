@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.businessCard.dao.BusinessCardDao">
+
+    <select id="getAppBusinessCardList" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        select b.* from business_card b,tb_user u where b.user_id = u.user_id and u.is_vip = 1
+        <if test="businessCard.cardStatus!=null">
+            and b.card_status = #{businessCard.cardStatus}
+        </if>
+        <if test="businessCard.keyWord!=null and businessCard.keyWord!=''">
+            and (b.industry_first_name like concat("%",#{businessCard.keyWord},"%") or b.industry_second_name like
+            concat("%",#{businessCard.keyWord},"%") or b.company_name like concat("%",#{businessCard.keyWord},"%"))
+        </if>
+
+        <if test="businessCard.companyProvince!=null and businessCard.companyProvince!=''">
+            and b.company_province like concat("%",#{businessCard.companyProvince},"%")
+        </if>
+        <if test="businessCard.companyCity!=null and businessCard.companyCity!=''">
+            and b.company_city like concat("%",#{businessCard.companyCity},"%")
+        </if>
+        <if test="businessCard.companyDistrict!=null and businessCard.companyDistrict!=''">
+            and b.company_district like concat("%",#{businessCard.companyDistrict},"%")
+        </if>
+        <if test="businessCard.industryFirstName!=null and businessCard.industryFirstName!=''">
+            and b.industry_first_name like concat("%",#{businessCard.industryFirstName},"%")
+        </if>
+        <if test="businessCard.industrySecondName!=null and businessCard.industrySecondName!=''">
+            and b.industry_second_name like concat("%",#{businessCard.industrySecondName},"%")
+        </if>
+        <if test="businessCard.companyFlair!=null and businessCard.companyFlair!=''">
+            and company_flair REGEXP #{businessCard.companyFlair}
+        </if>
+        <if test="sortType==1 or sortType==null">
+            order by u.vip_end_time desc
+        </if>
+        <if test="sortType==2">
+            order by b.create_time desc
+        </if>
+    </select>
+
+    <select id="getBusinessCardList" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        select
+            b.*,
+            ifnull(u.user_name,"用户不存在") as userName
+        from
+            business_card b
+        left join tb_user u on u.user_id = b.user_id
+        <where>
+            <if test="userName != null and userName != ''">
+                and u.user_name like concat("%",#{userName},"%")
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and b.company_name like concat("%",#{companyName},"%")
+            </if>
+            <if test="cardStatus != null">
+                and b.card_status = #{cardStatus}
+            </if>
+            <if test="userType != null">
+                and b.card_type = #{userType}
+            </if>
+            <if test="realName != null and realName != ''">
+                and b.real_name like concat("%",#{businessCard.realName},"%")
+            </if>
+            <if test="industryFirstName != null and industryFirstName != ''">
+                and b.industry_first_name like concat("%",#{industryFirstName},"%")
+            </if>
+            <if test="auditStatus != null">
+                and b.audit_status = #{auditStatus}
+            </if>
+        </where>
+        order by b.create_time desc
+    </select>
+
+    <select id="getProvinceList" resultType="com.sqx.modules.businessCard.vo.CityVo">
+        SELECT company_province as city
+        FROM `business_card`
+        WHERE audit_status = 1
+        GROUP BY company_province
+    </select>
+    <select id="getCityList" resultType="com.sqx.modules.businessCard.vo.CityVo">
+        SELECT company_city as city
+        FROM `business_card`
+        WHERE audit_status = 1
+        and company_province = #{city}
+        GROUP BY company_city
+    </select>
+    <select id="getDistrict" resultType="com.sqx.modules.businessCard.vo.CityVo">
+        SELECT company_district as city
+        FROM `business_card`
+        WHERE audit_status = 1
+          and company_city = #{city}
+        GROUP BY company_district
+    </select>
+
+
+    <select id="queryBusinessCardList" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT * FROM business_card
+        WHERE
+            user_id = #{userId}
+          AND audit_status = '1'
+        <if test="cardType != null">
+        and card_type = #{cardType}
+        </if>
+        ORDER BY
+            card_status DESC,
+            create_time DESC
+    </select>
+
+    <select id="queryAllList" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT * FROM business_card
+        <where>
+            1=1
+            <if test="userId != null">
+               and user_id = #{userId}
+            </if>
+            <if test="auditStatus != null">
+                AND audit_status = #{auditStatus}
+            </if>
+            <if test="cardType != null">
+                AND card_Type = #{cardType}
+            </if>
+        </where>
+        ORDER BY
+            card_status DESC,
+            create_time DESC
+    </select>
+
+    <select id="queryShowCard" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT * FROM business_card
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+                AND audit_status ='1'
+                and card_status = '1'
+        </where>
+    </select>
+
+    <select id="queryCompanyShowCard" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT * FROM business_card
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+                AND audit_status ='1'
+                and card_type = '2'
+        </where>
+    </select>
+
+    <update id="updateBrowseCount">
+        update
+            business_card
+        set
+            browse_count= browse_count + 1
+        where
+            card_id = #{cardId}
+    </update>
+
+    <update id="decrQuota">
+        UPDATE business_card
+        SET used_quota = used_quota + #{num},
+            quota = quota - #{num}
+        WHERE
+            card_id = #{cardId}
+    </update>
+
+    <update id="incrBrowseCount">
+        UPDATE business_card SET browse_count = browse_count + 1 WHERE card_id = #{cardId}
+    </update>
+
+    <update id="incrShareCount">
+        UPDATE business_card SET share_count = share_count + 1 WHERE card_id = #{cardId}
+    </update>
+
+    <update id="incrPopularityValue">
+        UPDATE business_card SET popularity_value = popularity_value + 1 WHERE card_id = #{cardId}
+    </update>
+
+    <select id="queryStaffCard" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT * FROM business_card
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByPopularityValue" resultType="java.util.LinkedHashMap">
+        SELECT
+            ( @sortNum := @sortNum + 1 ) AS sortNum,
+            b.card_id,
+        b.card_avatar,
+        b.card_type,
+        b.real_name,
+        b.company_name,
+        b.company_position,
+        b.popularity_value,
+        b.user_id,
+        (select count(*) from user_card_list ucl where ucl.card_id=b.card_id and ucl.user_id=#{userId}) as userCardListCount,
+        (select m.status from message_info m where m.by_user_id=#{userId} and m.platform_id=b.card_id and m.type=1 and m.state=6) as messageStatus
+        FROM
+            business_card b,
+            ( SELECT @sortNum := #{sortNum} ) AS sortNum
+        <where>
+            <if test="industrySecondName != null and industrySecondName != ''">
+                and b.industry_second_name = #{industrySecondName}
+            </if>
+            <if test="companyProvince != null and companyProvince != ''">
+                and b.company_province = #{companyProvince}
+            </if>
+            <if test="companyCity != null and companyCity != ''">
+                and b.company_city = #{companyCity}
+            </if>
+            <if test="companyDistrict != null and companyDistrict != ''">
+                and b.company_district = #{companyDistrict}
+            </if>
+             and b.card_status=1 and b.audit_status=1
+        </where>
+        ORDER BY b.popularity_value desc
+    </select>
+
+    <select id="queryStaff" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT
+            bc.*,
+            csr.id
+        FROM
+            company_staff_record csr
+        LEFT JOIN business_card bc ON csr.staff_card_id = bc.card_id
+        WHERE
+            csr.card_id = #{cardId}
+          AND csr.staff_sattus = 1
+    </select>
+
+    <select id="searchBusinessCard" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT
+            b.*,
+            (select count(*) from user_card_list ucl where ucl.card_id=b.card_id and ucl.user_id=#{userId}) as userCardListCount
+        FROM
+            business_card b
+        WHERE
+            b.card_phone LIKE CONCAT('%', #{keyword}, '%')
+           OR b.real_name LIKE CONCAT('%', #{keyword}, '%')
+           OR b.company_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY
+            b.create_time DESC
+    </select>
+    <select id="queryByPhone" resultType="com.sqx.modules.businessCard.entity.BusinessCard">
+        SELECT
+            bc.*
+        FROM
+            business_card bc
+        WHERE
+            bc.card_phone like concat('%', #{phone} ,'%')
+          AND NOT EXISTS (SELECT 1 FROM company_staff_record csr WHERE csr.staff_card_id = bc.card_id AND csr.card_id = #{cardId})
+    </select>
+    <select id="countCardNum" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            business_card
+        <where>
+            <if test="cardType != null">
+                and card_type = #{cardType}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time BETWEEN #{startTime} and #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryCardLine" resultType="com.sqx.modules.dataCenter.model.vo.CardLineVO$CardLine">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m-%d') as dayStr,
+            card_type as cardType,
+            COUNT(*) as cnt
+        FROM business_card
+        WHERE create_time >= #{startDate}
+            AND #{endDate} >= create_time
+        GROUP BY dayStr, card_type
+        ORDER BY dayStr ASC, card_type ASC
+    </select>
+</mapper>

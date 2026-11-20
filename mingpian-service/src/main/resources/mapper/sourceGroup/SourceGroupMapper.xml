@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.sourceGroup.dao.SourceGroupDao">
+
+    <select id="getMySourceGroupList" resultType="com.sqx.modules.sourceGroup.entity.SourceGroup">
+        select g.* from source_group g,source_group_role r where r.group_id = g.group_id and r.user_id = #{userId}
+        <if test="groupName!=null and groupName!=''">
+            and g.group_name like concat("%",#{groupName},"%")
+        </if>
+        order by r.create_time desc
+    </select>
+</mapper>

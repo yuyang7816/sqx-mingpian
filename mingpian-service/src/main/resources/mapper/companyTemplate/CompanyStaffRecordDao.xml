@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.companyCard.dao.CompanyStaffRecordDao">
+
+    <resultMap type="com.sqx.modules.companyCard.entity.CompanyStaffRecord" id="CompanyStaffRecordMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="cardId" column="card_id" jdbcType="INTEGER"/>
+        <result property="staffUserId" column="staff_user_id" jdbcType="INTEGER"/>
+        <result property="staffCardId" column="staff_card_id" jdbcType="INTEGER"/>
+        <result property="applyContent" column="apply_content" jdbcType="VARCHAR"/>
+        <result property="staffSattus" column="staff_sattus" jdbcType="INTEGER"/>
+        <result property="staffSource" column="staff_source" jdbcType="INTEGER"/>
+        <result property="applyTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="joinTime" column="join_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="auditContent" column="audit_content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryApplyList" resultType="java.util.LinkedHashMap">
+        SELECT
+            a.id,
+            a.apply_content as applyCotent,
+            a.staff_sattus as staffSattus,
+            a.staff_source as staffSource,
+            b.real_name as realName,
+            b.card_phone as cardPhone,
+            b.card_avatar as cardAvatar,
+            b.industry_first_id as industryFirstId,
+            b.industry_second_id as industrySecondId,
+            b.industry_first_name as industryFirstName,
+            b.industry_second_name as industrySecondName
+        FROM
+            company_staff_record a
+                LEFT JOIN business_card b ON a.staff_card_id = b.card_id
+        WHERE
+            a.staff_source = 0
+          AND a.staff_sattus = 0
+          AND a.card_id = '57'
+    </select>
+
+    <select id="pageInfo" resultType="com.sqx.modules.companyCard.domain.vo.CompanyStaffRecordVo">
+        SELECT
+            csr.*,
+            bc.real_name,
+            bc.card_avatar,
+            bc.company_position
+        FROM
+            `company_staff_record` csr
+        LEFT JOIN business_card bc ON csr.staff_card_id = bc.card_id
+        where csr.card_id = #{cardId}
+        <if test="status != null">
+            and csr.staff_sattus = #{status}
+        </if>
+        ORDER BY csr.create_time DESC
+    </select>
+
+</mapper>
+

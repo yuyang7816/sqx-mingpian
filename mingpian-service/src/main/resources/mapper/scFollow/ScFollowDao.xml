@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.scFollow.dao.ScFollowDao">
+
+
+    <select id="getMyFollowList" resultType="com.sqx.modules.scFollow.vo.ScFollowVo">
+        select sc.create_time,
+               p.title,
+               p.demand_id,
+               p.procure_phone,
+               p.procure_real_name,
+               p.procure_img,
+               p.browse_count,
+               p.count_money
+               <if test="lng!=null and lat!=null">
+                   ,(st_distance (point (p.receive_lng, p.receive_lat),point(#{lng},#{lat}) ) *111195) as distance
+               </if>
+        from sc_follow sc,
+             tb_user u,
+             procure_demand p
+        where u.user_id = sc.user_id and sc.demand_id = p.demand_id
+          and sc.user_id = #{userId}
+        order by sc.create_time desc
+
+    </select>
+</mapper>

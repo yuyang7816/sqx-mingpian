@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.businessCard.dao.VisitCardRecordDao">
+
+    <resultMap type="com.sqx.modules.businessCard.entity.VisitCardRecord" id="VisitCardRecordMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="cardId" column="card_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="visitSource" column="visit_source" jdbcType="VARCHAR"/>
+        <result property="visitTime" column="visit_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="queryVisitRecord" resultType="java.util.Map">
+        SELECT
+            a.user_id as visitUserId,
+            a.user_name as visitUserName,
+            a.visit_source as visitSource,
+            a.visit_time as visitTime,
+            b.card_id as cardId,
+            b.user_id as cardUserId,
+            b.real_name as cardRealName
+        FROM
+            `visit_card_record` a
+                LEFT JOIN business_card b ON a.card_id = b.card_id
+        WHERE
+            b.user_id = #{userId}
+        order by a.visit_time DESC
+    </select>
+
+    <select id="queryTodayVisitData" resultType="java.lang.Integer">
+
+        SELECT
+            count(*)
+        FROM
+            `visit_card_record` a
+                LEFT JOIN tb_user b ON a.user_id = b.user_id
+        <where>
+            1=1
+            <if test="cardId != null">
+                and a.card_id=#{cardId}
+            </if>
+            <if test="date != null and date != ''">
+                and a.visit_time like concat(#{date},'%')
+            </if>
+        </where>
+            order by a.visit_time desc
+    </select>
+
+    <select id="queryrecentlyVisitData" resultType="java.util.Map">
+        SELECT
+        b.user_name as userName,
+        b.user_id as userId,
+        b.avatar,
+        a.visit_time as visitTime,
+        a.visit_source as visitSource,
+        a.card_id as cardId,
+        bc.card_id as inviteeCardId,
+        (select count(*) from user_card_list ucl where ucl.card_id=bc.card_id and ucl.user_id=#{userId}) as userCardListCount,
+        (select m.status from message_info m where m.by_user_id=#{userId} and m.platform_id=bc.card_id and m.type=1 and m.state=6) as messageStatus
+        FROM
+        `visit_card_record` a
+        LEFT JOIN tb_user b ON a.user_id = b.user_id
+        left join business_card bc on bc.user_id=b.user_id AND bc.audit_status = 1 AND bc.card_status = 1
+        where 1=1 and b.user_id is not null
+        <if test="cardId != null">
+            and a.card_id=#{cardId}
+        </if>
+        GROUP BY userId
+        order by a.visit_time desc
+        limit 3
+    </select>
+
+    <select id="queryVisitMe" resultType="java.util.Map">
+        SELECT DISTINCT
+            vcr.user_id AS visitUserId,
+            vcr.visit_time AS visitTime,
+            u.avatar,
+            u.user_name AS visitUserName,
+            (select count(*) from user_card_list ucl where ucl.card_id=bc.card_id and ucl.user_id=#{userId}) as userCardListCount,
+            (select m.status from message_info m where m.by_user_id=#{userId} and m.platform_id=bc.card_id and m.type=1 and m.state=6) as messageStatus,
+            bc.card_id as card_id
+        FROM
+            visit_card_record vcr
+        LEFT JOIN tb_user u ON vcr.user_id = u.user_id
+        left join business_card bc on bc.user_id=vcr.user_id AND bc.audit_status = 1 AND bc.card_status = 1
+        WHERE
+            vcr.card_id = #{cardId}
+        GROUP BY visitUserName
+        ORDER BY
+            vcr.visit_time DESC
+    </select>
+
+    <select id="queryMyVisit" resultType="java.util.Map">
+        SELECT
+            a.card_id as visitCardId,
+            a.user_id as visitUserId,
+            a.visit_source as visitSource,
+            a.visit_time as visitTime,
+            b.avatar,
+            b.user_name as visitUserName,
+            (select count(*) from user_card_list ucl where ucl.card_id=a.card_id and ucl.user_id=#{userId}) as userCardListCount,
+            (select m.status from message_info m where m.by_user_id=#{userId} and m.platform_id=a.card_id and m.type=1 and m.state=6) as messageStatus,
+            c.*
+        FROM
+            `visit_card_record` a
+            LEFT JOIN business_card c on a.card_id = c.card_id AND c.audit_status = 1 AND c.card_status = 1
+            LEFT JOIN tb_user b on c.user_id=a.user_id
+        WHERE
+            a.user_id=#{userId}
+        GROUP BY visitUserName, visitCardId
+        order by a.visit_time DESC
+    </select>
+    <select id="countVisitor" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*) AS total_count
+        FROM
+            (
+                SELECT
+                    vcr.card_id AS visitCardId,
+                    u.user_name AS visitUserName
+                FROM
+                    visit_card_record vcr
+                        LEFT JOIN tb_user u ON vcr.user_id = u.user_id
+                WHERE
+                    card_id = #{cardId}
+                GROUP BY
+                    visitUserName,
+                    visitCardId
+            ) AS t
+    </select>
+    <select id="countViews" resultType="java.lang.Integer">
+        SELECT
+            COUNT(DISTINCT card_id) AS total_count
+        FROM
+            visit_card_record
+        WHERE
+            user_id = #{userId}
+    </select>
+</mapper>
+

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sqx.modules.app.dao.UserDao">
+
+
+    <select id="selectUserPage" resultType="com.sqx.modules.app.entity.UserEntity">
+        select u.*,m.money from tb_user u
+        left join user_money m on m.user_id=u.user_id
+
+        where 1=1
+        <if test="userEntity.sex!=null">
+            and u.sex=#{userEntity.sex}
+        </if>
+        <if test="userEntity.platform!=null and userEntity.platform!=''">
+            and u.platform=#{userEntity.platform}
+        </if>
+        <if test="userEntity.sysPhone!=null and userEntity.sysPhone!=''">
+            and u.sys_phone=#{userEntity.sysPhone}
+        </if>
+        <if test="userEntity.phone!=null and userEntity.phone!=''">
+            and u.phone like concat("%",#{userEntity.phone},"%")
+        </if>
+        <if test="userEntity.status!=null">
+            and u.status=#{userEntity.status}
+        </if>
+        <if test="userEntity.isAgent!=null">
+            and u.is_agent=#{userEntity.isAgent}
+        </if>
+        <if test="userEntity.isStaff!=null">
+            and u.is_staff=#{userEntity.isStaff}
+        </if>
+        <if test="userEntity.isVip!=null">
+            and u.is_vip=#{userEntity.isVip}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and date_format(u.create_time,'%Y-%m-%d')>=date_format(#{startTime},'%Y-%m-%d')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and date_format(u.create_time,'%Y-%m-%d')&lt;=date_format(#{endTime},'%Y-%m-%d')
+        </if>
+        <if test="userEntity.userName!=null and userEntity.userName!=''">
+            and u.user_name like concat('%',#{userEntity.userName},'%')
+        </if>
+        <if test="userEntity.isPromoter != null">
+            and u.is_promoter = #{userEntity.isPromoter}
+        </if>
+
+        order by u.create_time desc
+    </select>
+
+
+    <select id="queryInviterCount" resultType="int">
+        select count(*)
+        from tb_user
+        where inviter_code = #{inviterCode}
+    </select>
+    <select id="queryUserCount" resultType="int">
+        select count(*)from tb_user where 1=1
+        <if test="type==1">
+            and date_format(create_time,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type==2">
+            and date_format(create_time,'%Y-%m')=date_format(#{date},'%Y-%m')
+        </if>
+        <if test="type==3">
+            and date_format(create_time,'%Y')=date_format(#{date},'%Y')
+        </if>
+
+    </select>
+    <select id="queryPayMoney" resultType="Double">
+        select ifnull(sum(money),0) from pay_details where `state`=1
+        <if test="type==1">
+            and date_format(create_time,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type==2">
+            and date_format(create_time,'%Y-%m')=date_format(#{date},'%Y-%m')
+        </if>
+        <if test="type==3">
+            and date_format(create_time,'%Y')=date_format(#{date},'%Y')
+        </if>
+    </select>
+
+
+    <select id="userMessage" resultType="int">
+        select count(*) from tb_user t where 1=1
+        <if test="type==1">
+            and date_format(t.create_time,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type==2">
+            and date_format(t.create_time,'%Y-%m')=date_format(#{date},'%Y-%m')
+        </if>
+        <if test="type==3">
+            and date_format(t.create_time,'%Y')=date_format(#{date},'%Y')
+        </if>
+    </select>
+
+    <select id="selectUserByUserId" resultType="com.sqx.modules.app.entity.UserEntity">
+        select *
+        from tb_user
+        where user_id = #{userId}
+    </select>
+    <select id="getMyTeamUserList" resultType="java.util.HashMap">
+        SELECT u.`user_name`                     as userName,
+               u.avatar,
+               u.user_id                         as userId,
+               a.examine_time                    AS examineTime,
+               a.status,
+               (SELECT ifnull(SUM(money), 0)
+                FROM user_money_details d
+                WHERE d.user_id = #{userId}
+                  and d.relation_id = u.user_id) AS money
+        FROM tb_user u
+                 left join agent_auth a on u.user_id = a.user_id
+
+        WHERE u.`inviter_code` = #{invitationCode}
+        ORDER BY money DESC
+    </select>
+    <select id="getLikeUserList" resultType="com.sqx.modules.app.entity.UserEntity">
+        SELECT u.*
+        FROM tb_user u,
+             industry_news_like l
+        WHERE u.user_id = l.user_id
+          AND l.news_id = #{newsId}
+        order by l.create_time desc
+    </select>
+    <select id="getStaffInviter" resultType="java.lang.Integer">
+        select count(*)
+        from tb_user u
+        where u.staff_inviter_code = #{staffInvitationCode}
+        <if test="dateType=='day'">
+            and date_format(create_time,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="dateType=='month'">
+            and date_format(create_time,'%Y-%m')=date_format(#{date},'%Y-%m')
+        </if>
+        <if test="dateType=='year'">
+            and date_format(create_time,'%Y')=date_format(#{date},'%Y')
+        </if>
+    </select>
+
+    <select id="queryUserLine" resultType="com.sqx.modules.dataCenter.model.vo.UserLineVO$UserLine">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m-%d') as dayStr,
+            COUNT(*) as cnt
+        FROM tb_user
+        WHERE create_time >= #{startDate}
+          AND #{endDate} >= create_time
+        GROUP BY dayStr
+        ORDER BY dayStr ASC
+    </select>
+    <select id="queryPlatformUserCount" resultType="java.lang.Integer">
+        select count(*) from tb_user where platform = #{platform}
+        <if test="type==1">
+            and date_format(create_time,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+        </if>
+        <if test="type==2">
+            and date_format(create_time,'%Y-%m')=date_format(#{date},'%Y-%m')
+        </if>
+        <if test="type==3">
+            and date_format(create_time,'%Y')=date_format(#{date},'%Y')
+        </if>
+    </select>
+
+</mapper>

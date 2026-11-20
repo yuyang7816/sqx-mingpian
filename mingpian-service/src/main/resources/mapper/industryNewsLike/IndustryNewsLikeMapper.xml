@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.industryNewsLike.dao.IndustryNewsLikeDao">
+
+
+    <select id="getNewsLikeList" resultType="com.sqx.modules.industryNewsLike.entity.IndustryNewsLike">
+        SELECT t.*,
+        u.user_name,
+        u.avatar
+        FROM industry_news_like t,
+        tb_user u
+        WHERE t.user_id = u.user_id
+        <if test="industryNewsLike.newsId!=null">
+            and t.news_id = #{industryNewsLike.newsId}
+        </if>
+        order by create_time desc
+    </select>
+    <select id="getMyLikeIndustryNewsList" resultType="com.sqx.modules.industryNews.entity.IndustryNews">
+        select n.*
+        from industry_news_like i,
+             industry_news n
+        where i.news_id = n.news_id
+          and n.status = 1
+          and i.user_id = #{userId}
+        order by i.create_time desc
+    </select>
+    <select id="getCountByUserId" resultType="java.lang.Integer">
+        select count(*)
+        from industry_news n,
+             industry_news_like l
+        where n.news_id = l.news_id
+          and n.status = 1
+          and l.user_id = #{userId}
+    </select>
+</mapper>

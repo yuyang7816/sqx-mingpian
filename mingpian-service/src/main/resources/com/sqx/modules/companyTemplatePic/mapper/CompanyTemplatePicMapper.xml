@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.companyTemplatePic.mapper.CompanyTemplatePicMapper">
+
+    <resultMap id="BaseResultMap" type="com.sqx.modules.companyTemplatePic.domain.CompanyTemplatePic">
+            <id property="id" column="id" />
+            <result property="company_card_id" column="company_card_id" />
+            <result property="pic" column="pic" />
+            <result property="create_time" column="create_time" />
+            <result property="update_time" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,company_card_id,pic,create_time,update_time
+    </sql>
+</mapper>

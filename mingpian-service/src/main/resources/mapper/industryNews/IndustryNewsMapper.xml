@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.industryNews.dao.IndustryNewsDao">
+
+
+    <select id="getCountByDate" resultType="java.lang.Integer">
+        select count(*) from industry_news c where c.user_id = #{userId}
+        <if test="cycle==1">
+            and date_format(c.create_time,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d')
+        </if>
+        <if test="cycle==2">
+            and date_format(c.create_time,'%Y-%m') = date_format(now(),'%Y-%m')
+        </if>
+        <if test="cycle==3">
+            and date_format(c.create_time,'%Y') = date_format(now(),'%Y')
+        </if>
+    </select>
+
+    <select id="getMyLikeIndustryList" resultType="com.sqx.modules.industryNews.entity.IndustryNews">
+    select i.* from industry_news i,industry_news_like l where i.news_id  = l.news_id and l.user_id= #{userId}
+    order by l.create_time desc
+    </select>
+    <select id="getIndustryNewsById" resultType="com.sqx.modules.industryNews.vo.IndustryNewsVo">
+        select n.*,u.user_name,b.company_logo,b.real_name,b.company_name,b.card_id,
+        user_name,
+        b.first_product,
+        b.first_product_img,
+        (select count(*) from industry_news_like l where l.news_id = n.news_id) as likeCount,
+        (select count(*) from industry_news_comment t where t.news_id = n.news_id) as commentCount
+        <if test="loginUserId!=null">
+            ,(select if(count(*)>0,1,0) from industry_news_like l where l.news_id = n.news_id and l.user_id =
+            #{loginUserId})
+            as isLike
+        </if>
+        from industry_news n
+        left join tb_user u on u.user_id = n.user_id
+        LEFT JOIN `business_card` b ON b.`user_id` = n.`user_id`
+        where n.news_id = #{newsId}
+    </select>
+    <select id="getIndustryNewsList" resultType="com.sqx.modules.industryNews.vo.IndustryNewsVo">
+        select n.*, u.user_name,b.company_logo,b.real_name,b.company_name,b.card_id
+        from industry_news n
+        left join tb_user u on u.user_id = n.user_id
+        LEFT JOIN `business_card` b ON b.`user_id` = n.`user_id`
+        AND b.`card_status` = 1
+        <where>
+            <if test="industryNews.userId!=null">
+                and u.user_id = #{industryNews.userId}
+            </if>
+            <if test="industryNews.status!=null">
+                and n.status = #{industryNews.status}
+            </if>
+            <if test="industryNews.isEnable!=null">
+                and n.is_enable = #{industryNews.isEnable}
+            </if>
+            <if test="industryNews.industryType!=null and industryNews.industryType!=''">
+                and n.industry_type like concat("%",#{industryNews.industryType},"%")
+            </if>
+            <if test="industryNews.releaseType!=null">
+                and n.release_type = #{industryNews.releaseType}
+            </if>
+            <if test="industryNews.sysUserName!=null and industryNews.sysUserName!=''">
+                and n.sys_user_name like concat("%",#{industryNews.sysUserName},"%")
+            </if>
+            <if test="industryNews.userName!=null and industryNews.userName!=''">
+                and u.user_name like concat("%",#{industryNews.userName},"%")
+            </if>
+            <if test="industryNews.enterpriseName!=null and industryNews.enterpriseName!=''">
+                and n.enterprise_name like concat("%",#{industryNews.enterpriseName},"%")
+            </if>
+            <if test="industryNews.title!=null and industryNews.title!=''">
+                and n.title like concat("%",#{industryNews.title},"%")
+            </if>
+            <if test="industryNews.keyWord!=null and industryNews.keyWord!=''">
+                and n.title like concat("%",#{industryNews.keyWord},"%")
+            </if>
+        </where>
+        order by n.create_time desc
+    </select>
+</mapper>

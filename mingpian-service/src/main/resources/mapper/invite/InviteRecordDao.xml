@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.invite.dao.InviteRecordDao">
+
+    <resultMap type="com.sqx.modules.invite.entity.InviteRecord" id="InviteRecordMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="inviterId" column="inviter_id" jdbcType="INTEGER"/>
+        <result property="inviterCardId" column="inviter_card_id" jdbcType="INTEGER"/>
+        <result property="inviteeId" column="invitee_id" jdbcType="INTEGER"/>
+        <result property="inviteeCardId" column="invitee_card_id" jdbcType="INTEGER"/>
+        <result property="inviteePortrait" column="invitee_portrait" jdbcType="VARCHAR"/>
+        <result property="inviteeName" column="invitee_name" jdbcType="VARCHAR"/>
+        <result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP"/>
+        <result property="inviteTitle" column="invite_title" jdbcType="VARCHAR"/>
+        <result property="inviteContent" column="invite_content" jdbcType="VARCHAR"/>
+        <result property="inviteType" column="invite_type" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="myInvite" resultMap="InviteRecordMap">
+        select * from invite_record
+        <where>
+            <if test="userId != null ">
+                and inviter_id = #{userId}
+            </if>
+            <if test="cardId != null ">
+                and inviter_card_id = #{cardId}
+            </if>
+        </where>
+    </select>
+    <select id="myInviteRecord" resultType="com.sqx.modules.invite.model.InviteRecordVo">
+        SELECT DISTINCT
+            i.invitee_name,
+            i.invite_content,
+            i.invitee_id,
+            u.*,
+            i.create_time AS inviteTime,
+            (select card_id from business_card b where b.user_id = u.user_id and b.card_status = 1 and audit_status = 1) as card_id
+        FROM
+            invite_record i
+        JOIN tb_user u ON i.invitee_id = u.user_id
+        WHERE
+            i.inviter_id = #{userId}
+        ORDER BY
+            i.create_time DESC
+    </select>
+
+</mapper>
+

@@ -1,0 +1,379 @@
+{
+	"easycom": {
+		"autoscan": true,
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#287AFE",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/index/webView",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/Enterprise/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/Business/index",
+			"style": {
+				"navigationBarTitleText": "名片夹",
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/Shoot/index",
+			"style": {
+				"navigationBarTitleText": "拍摄名片"
+			}
+		},
+		{
+			"path": "pages/my/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarBackgroundColor": "#287AFE",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/my/invitationUser",
+			"style": {
+				"navigationBarTitleText": "邀请好友"
+			}
+		}, {
+			"path": "pages/my/userInfo",
+			"style": {
+				"navigationBarTitleText": "我的资料",
+				"navigationBarBackgroundColor": "#287AFE",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/my/info",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
+		},
+		{
+			"path": "pages/msg/msg",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/webView/webView",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/public/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}, {
+			"path": "pages/public/loginphone",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}, {
+			"path": "pages/public/register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		}, {
+			"path": "pages/public/forgetPwd",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		}
+	],
+	"subPackages": [{
+		"root": "my",
+		"pages": [{
+				"path": "hecha/index",
+				"style": {
+					"navigationBarTitleText": "搜索"
+				}
+			}, {
+				"path": "hecha/list",
+				"style": {
+					"navigationBarTitleText": "核查记录",
+					"enablePullDownRefresh": true
+				}
+			},  {
+				"path": "hecha/listDetail",
+				"style": {
+					"navigationBarTitleText": "企业信息"
+				}
+			},{
+				"path": "search/index",
+				"style": {
+					"navigationBarTitleText": "搜索",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "message/index",
+				"style": {
+					"navigationBarTitleText": "消息中心",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "wallet/tixian",
+				"style": {
+					"navigationBarTitleText": "提现"
+				}
+			}, {
+				"path": "wallet/chongzhi",
+				"style": {
+					"navigationBarTitleText": "充值"
+				}
+			}, {
+				"path": "wallet/index",
+				"style": {
+					"navigationBarTitleText": "我的钱包",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "wallet/cashList",
+				"style": {
+					"navigationBarTitleText": "提现记录",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "wallet/moneydetail",
+				"style": {
+					"navigationBarTitleText": "钱包明细",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "wallet/zhifubao",
+				"style": {
+					"navigationBarTitleText": "提现账号"
+				}
+			}, {
+				"path": "team/earnings",
+				"style": {
+					"navigationBarTitleText": "我的收益",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "team/index",
+				"style": {
+					"navigationBarTitleText": "我的团队",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "phb/index",
+				"style": {
+					"navigationBarTitleText": "名片榜单",
+					"navigationStyle": "custom",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/PublishOne",
+				"style": {
+					"navigationBarTitleText": "企业名片",
+					"navigationBarBackgroundColor": "#98B1FF",
+					"navigationBarTextStyle": "white"
+				}
+			}, {
+				"path": "Enterprise/PublishTwo",
+				"style": {
+					"navigationBarTitleText": "名片发布",
+					"navigationBarBackgroundColor": "#98B1FF",
+					"navigationBarTextStyle": "white"
+				}
+			}, {
+				"path": "Enterprise/PublishEnd",
+				"style": {
+					"navigationBarTitleText": "名片发布",
+					"navigationBarBackgroundColor": "#98B1FF",
+					"navigationBarTextStyle": "white"
+				}
+			}, {
+				"path": "Enterprise/Editor",
+				"style": {
+					"navigationBarTitleText": "编辑模板"
+				}
+			}, {
+				"path": "Enterprise/cardCode",
+				"style": {
+					"navigationBarTitleText": "我的名片码"
+				}
+			}, {
+				"path": "Enterprise/cardData",
+				"style": {
+					"navigationBarTitleText": "名片数据",
+					"navigationBarBackgroundColor": "#287AFE",
+					"navigationBarTextStyle": "white"
+				}
+			}, {
+				"path": "Enterprise/style",
+				"style": {
+					"navigationBarTitleText": "更换样式",
+					"navigationBarBackgroundColor": "#287AFE",
+					"navigationBarTextStyle": "white",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/Switch",
+				"style": {
+					"navigationBarTitleText": "切换名片",
+					"navigationBarBackgroundColor": "#287AFE",
+					"navigationBarTextStyle": "white",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/member",
+				"style": {
+					"navigationBarTitleText": "企业成员",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/Record",
+				"style": {
+					"navigationBarTitleText": "申请记录",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/dt",
+				"style": {
+					"navigationBarTitleText": "全部动态",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "Enterprise/businessCard",
+				"style": {
+					"navigationBarTitleText": "TA的名片"
+				}
+			}, {
+				"path": "Enterprise/companyHome",
+				"style": {
+					"navigationBarTitleText": "企业主页"
+				}
+			}, {
+				"path": "grid/look",
+				"style": {
+					"navigationBarTitleText": "最近查看",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "grid/invitation",
+				"style": {
+					"navigationBarTitleText": "最近邀请",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "vip/index",
+				"style": {
+					"navigationBarTitleText": "会员中心",
+					"navigationBarBackgroundColor": "#C8DAFF"
+				}
+			}, {
+				"path": "renzheng/index",
+				"style": {
+					"navigationBarTitleText": "认证中心"
+				}
+			}, {
+				"path": "setting/index",
+				"style": {
+					"navigationBarTitleText": "设置中心"
+				}
+			}, {
+				"path": "setting/customer",
+				"style": {
+					"navigationBarTitleText": "客服中心"
+				}
+			}, {
+				"path": "setting/zhuxiao",
+				"style": {
+					"navigationBarTitleText": "注销账号"
+				}
+			}, {
+				"path": "setting/feedbackIndex",
+				"style": {
+					"navigationBarTitleText": "帮助中心"
+				}
+			}, {
+				"path": "setting/helpDetail",
+				"style": {
+					"navigationBarTitleText": "帮助中心"
+				}
+			}, {
+				"path": "setting/feedback",
+				"style": {
+					"navigationBarTitleText": "意见反馈"
+				}
+			}, {
+				"path": "setting/mimi",
+				"style": {
+					"navigationBarTitleText": "隐私政策"
+				}
+			},
+			{
+				"path": "setting/xieyi",
+				"style": {
+					"navigationBarTitleText": "用户协议"
+				}
+			}, {
+				"path": "setting/vipxiyi",
+				"style": {
+					"navigationBarTitleText": "会员服务协议"
+				}
+			}, {
+				"path": "setting/szmp",
+				"style": {
+					"navigationBarTitleText": "企业名片"
+				}
+			}
+		]
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "名片分享",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff"
+	},
+	"tabBar": {
+		"color": "#666666",
+		"selectedColor": "#287AFE",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/image/tabbar/fiest.png",
+			"selectedIconPath": "static/image/tabbar/fiest_.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/Business/index",
+			"iconPath": "static/image/tabbar/card.png",
+			"selectedIconPath": "static/image/tabbar/card_.png",
+			"text": "名片夹"
+		}, {
+			"pagePath": "pages/Enterprise/index",
+			"iconPath": "static/image/tabbar/qiye.png",
+			"selectedIconPath": "static/image/tabbar/qiye_.png",
+			"text": "企业"
+		}, {
+			"pagePath": "pages/my/index",
+			"iconPath": "static/image/tabbar/wo.png",
+			"selectedIconPath": "static/image/tabbar/wo_.png",
+			"text": "我的"
+		}]
+	},
+	"uniIdRouter": {}
+}

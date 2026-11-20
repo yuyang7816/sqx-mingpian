@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.companyCardTemplate.dao.CompanyTemplateDao">
+
+    <resultMap type="com.sqx.modules.companyCardTemplate.entity.CompanyTemplate" id="CompanyTemplateMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="companyCardId" column="company_card_id" jdbcType="INTEGER"/>
+        <result property="templateName" column="template_name" jdbcType="VARCHAR"/>
+        <result property="backImg" column="back_img" jdbcType="VARCHAR"/>
+        <result property="companyLogo" column="company_logo" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        <result property="companyuPisition" column="companyu_pisition" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="companyAddress" column="company_address" jdbcType="VARCHAR"/>
+        <result property="companyDesc" column="company_desc" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+</mapper>
+

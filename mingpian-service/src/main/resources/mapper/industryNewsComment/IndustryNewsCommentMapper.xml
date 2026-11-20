@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.industryNewsComment.dao.IndustryNewsCommentDao">
+
+    <select id="getIndustryNewsCommentList" resultType="com.sqx.modules.industryNewsComment.entity.IndustryNewsComment">
+        SELECT t.*,
+               u.user_name,
+               u.avatar
+        FROM `industry_news_comment` t,
+             tb_user u
+        WHERE t.user_id = u.user_id
+          and t.status = 1
+          and t.news_id = #{newsId}
+        order by create_time desc
+    </select>
+    <select id="getCommentList" resultType="com.sqx.modules.industryNewsComment.entity.IndustryNewsComment">
+        SELECT t.*,
+        u.user_name,
+        u.avatar
+        FROM `industry_news_comment` t,
+        tb_user u
+        WHERE t.user_id = u.user_id
+        <if test="industryNewsComment.newsId!=null">
+            and t.news_id = #{industryNewsComment.newsId}
+        </if>
+          <if test="industryNewsComment.status!=null">
+              and t.status = #{industryNewsComment.status}
+          </if>
+        <if test="industryNewsComment.userId!=null">
+            and t.user_id = #{industryNewsComment.userId}
+        </if>
+        order by create_time desc
+    </select>
+</mapper>

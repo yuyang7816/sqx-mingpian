@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sqx.modules.sourceGroupRole.dao.SourceGroupRoleDao">
+
+    <select id="getSourceGroupRoleList" resultType="com.sqx.modules.sourceGroupRole.entity.SourceGroupRole">
+        select r.*,t.user_name,t.avatar from source_group_role r left join tb_user t on r.user_id = t.user_id
+        <where>
+            <if test="sourceGroupRole.groupId!=null">
+                and r.group_id = #{sourceGroupRole.groupId}
+            </if>
+            <if test="sourceGroupRole.userName!=null and sourceGroupRole.userName!=''">
+                and t.user_name like concat("%",#{sourceGroupRole.userName},"%")
+            </if>
+        </where>
+        order by r.create_time desc
+    </select>
+</mapper>

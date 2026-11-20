@@ -1,0 +1,13 @@
+// 站点主色（与 element-ui-theme Brand 同步，依赖 index.scss 先引入 _nf-scaffold-tokens）
+// tips: [$--color-primary] 须与 [/src/element-ui-theme/index.js] 当前主题色一致
+$--color-primary: $nf-brand;
+
+// Navbar
+$navbar--background-color: $nf-navbar-bg;
+
+// Sidebar
+$sidebar--background-color-dark: $nf-sidebar-bg;
+$sidebar--color-text-dark: $nf-text-regular;
+
+// Content
+$content--background-color: $nf-page-bg;
